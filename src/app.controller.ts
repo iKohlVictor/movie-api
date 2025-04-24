@@ -40,4 +40,22 @@ export class AppController {
     }
     res.end();
   }
+
+  @Get("movies/json")
+  async getMoviesJson(@Res() res: Response) {
+    res.setHeader("Content-Type", "application/json");
+    res.write("[");
+    let first = true;
+
+    for await (const movie of this.appService.streamMovies(100)) {
+      if (!first) {
+        res.write(",");
+      }
+      res.write(JSON.stringify(movie));
+      first = false;
+    }
+
+    res.write("]");
+    res.end();
+  }
 }
